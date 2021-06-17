@@ -1,3 +1,10 @@
+"""
+Creates a band limited square wave by integrating band limited
+pulse train.
+
+The band limited pulse train is _not_ windowed; each extends for
+the entire duration of audio, so processing _heavy_
+"""
 from sinc import bl_impulse
 
 from scipy import signal
