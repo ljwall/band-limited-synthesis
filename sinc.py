@@ -5,26 +5,38 @@ taylor expansion over zero
 import matplotlib.pyplot as plt
 import math
 import numpy as np
+from scipy import signal
 
+def sinc(x):
+    """
+    Calculate sin(x)/x
+    """
+    if abs(x) < 0.1:
+        return 1 - x**2 / 6 + x**4 / 120
+    return math.sin(x)/x
+
+def bl_impulse(fs, t):
+    """
+    Impluse function
+
+    i(t) = 1 | t = 0
+           0 | otherwise
+
+    except band limited to sample rate (fs) / 2.
+
+    args:
+        fs  - sample rate in hz
+        t   - value
+
+    return number
+    """
+    return sinc(np.pi * fs * t)
 
 if __name__ == '__main__':
-    x = np.linspace(-5, 5, 500)
-    y1 = np.sin(x)
-    y2 = x - x**3 / math.factorial(3) + x**5 / math.factorial(5) - x**7 / math.factorial(7) + x**9 / math.factorial(9)
-
-    y3 = 1 - x**2 / math.factorial(3) + x**4 / math.factorial(5) - x**6 / math.factorial(7) + x**8 / math.factorial(9)
-
-    xplus = np.linspace(0.1, 40, 2000)
-    sinc = np.sin(xplus)/xplus
-
-    plt.figure(num = 3, figsize=(8, 5))
-    # plt.plot(x, y2)
-    # plt.plot(x, y1,
-    #     color='red',
-    #     linewidth=1.0,
-    #     linestyle='--'
-    # )
-    plt.plot(x, y3)
-    plt.plot(xplus, sinc)
-
+    N = 40000
+    x = np.linspace(-60, 60, N)
+    y = np.vectorize(sinc)(x)
+    bw  = signal.windows.blackman(N)
+    plt.plot(x, y)
+    plt.plot(x, y*bw)
     plt.show()

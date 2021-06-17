@@ -8,6 +8,7 @@ play with `ffplay` and the while the sine is smooth the aliasing
 is exemely audible and visible on the square wave.
 """
 
+import matplotlib.pyplot as plt
 import numpy as np
 from scipy import integrate
 import wavio
@@ -32,3 +33,7 @@ sqr = 0.06 * np.vectorize(lambda x: 1 if x >= 0 else -1)(x)
 
 wavio.write("sqr.wav", sqr, rate, sampwidth=4, scale=(-1, 1))
 wavio.write("sine.wav", x, rate, sampwidth=4, scale=(-1, 1))
+
+plt.plot(sqr[:600])
+plt.plot(x[:600])
+plt.show()
