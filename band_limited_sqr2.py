@@ -30,7 +30,13 @@ class Blit:
 
     def next(self):
         # Add the current state of the all the band limet pulses we have
-        result  = sum([v * self.impulse[int(t)] for t, v in self.times])
+        result = 0
+        for t, v in self.times:
+            if int(t) == t:
+                b = self.impulse[int(t)]
+            else:
+                b = self.impulse[int(t)]*(1 - t + int(t)) + self.impulse[int(t)]*(t- int(t))
+            result = result + v*b
         # and update the times ready for next time
         self.times = [
             (t + self.omega, v)
