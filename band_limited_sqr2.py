@@ -46,15 +46,15 @@ class Blit:
 rate = 44100
 
 # sample duration (seconds)
-T = 25
+T = 10
 
 N = T * rate
 
 # freq (Hz)
-#f = np.linspace(440, 440, N)
-f = np.logspace(7, 13, N, base=2) # 128 to 8192 Hz (6 Octaves)
+f = np.linspace(440, 440, N)
+#f = np.logspace(7, 13, N, base=2) # 128 to 8192 Hz (6 Octaves)
 
-pulse_width = np.linspace(0.85, 0.85, N)
+pulse_width = 0.5 + 0.45*np.sin(np.linspace(0, 10*np.pi, N))
 
 # Set up band limited impulse train class
 blit = Blit(rate, 1024)
@@ -63,25 +63,33 @@ blit = Blit(rate, 1024)
 x = np.linspace(0, 0, N)
 # Holds the lossy integral of x, i.e. the resulting squarewave
 y = np.linspace(0, 0, N)
+# An aliased version
+z = np.linspace(0, 0, N)
 
 # Running calulation of the aliasing triangle
 tri = 0
 high = False
 
 for i in range(1, N):
-    tri = (tri + f[i]/rate) % 1
-    if tri>pulse_width[i] and not high:
+    step = f[i]/rate
+    if tri + step > pulse_width[i] and not high:
         # time to go high
-        blit.add_time((tri - pulse_width[i])*rate/f[i], 1)
+        blit.add_time((tri + step - pulse_width[i])/step, 1)
         high = True
-    elif tri<pulse_width[i] and high:
+
+    tri = (tri + f[i]/rate) % 1
+
+    if tri<pulse_width[i] and high:
         # time to go low
-        blit.add_time(tri*rate/f[i], -1)
+        blit.add_time(tri/step, -1)
         high = False
 
     x[i] = blit.next()
     y[i] = 0.9995*y[i-1] + x[i]
+    z[i] = 1 if high else -1
 
 plt.plot(y)
+plt.plot(z)
 plt.show()
 wavio.write("sqr_bl_2.wav", 0.2*x, rate, sampwidth=4, scale=(-1, 1))
+wavio.write("sqr_alias_2.wav", 0.05*z, rate, sampwidth=4, scale=(-1, 1))
