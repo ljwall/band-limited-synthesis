@@ -22,10 +22,8 @@ pulse_width = 0.5 + 0.4*np.sin(np.linspace(0, 10*np.pi, N))
 #pulse_width = np.linspace(0.5, 0.5, N)
 #pulse_width = np.linspace(0.5, 0.99, N)
 
-sqr, tri = sythesize(rate, f, pulse_width)
+sqr = sythesize(rate, f, pulse_width)
 
-plt.plot(0.2*sqr)
-plt.plot(0.00005*tri)
+plt.plot(sqr)
 plt.show()
-wavio.write("sqr_bl_2.wav", 0.2*sqr, rate, sampwidth=4, scale=(-1, 1))
-wavio.write("tri_bl.wav", 0.00005*tri, rate, sampwidth=4, scale=(-1, 1))
+wavio.write("sqr.wav", 0.2*sqr, rate, sampwidth=4, scale=(-1, 1))

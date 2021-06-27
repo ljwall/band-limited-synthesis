@@ -29,8 +29,6 @@ def sythesize(rate, f, pw):
     x = np.linspace(0, 0, N)
     # Holds the lossy integral of x, i.e. the resulting pulse wave
     y = np.linspace(0, 0, N)
-    # Holds the lossy integral of y, i.e. the resulting triangle
-    z = np.linspace(0, 0, N)
 
     # Running calulation of the aliasing saw
     saw = 0
@@ -51,10 +49,8 @@ def sythesize(rate, f, pw):
             high = False
 
         x[i] = blit.next()
-        R=0.9995
+        R=0.9997
         # Integrate once for square wave
-        y[i] = x[i] - x[i-1] + 2* R * y[i-1] - R*R*(y[i-2] if i>=2 else 0)
-        # Integrate again for tri
-        z[i] = f[i]*(y[i] - y[i-1]) + 2*R* z[i-1] - R*R*(z[i-2] if i>=2 else 0)
+        y[i] = x[i] + R * y[i-1]
 
-    return y, z
+    return y
