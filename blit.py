@@ -1,15 +1,16 @@
 from sinc import windowed_bl_impulse
 
 class Blit:
-    def __init__(self, fs, omega):
+    def __init__(self, fs, omega, crossings):
         """
         fs - audio sample rate
         omega - over sampling rate for the band limted impulse
+        crossings - number of crosssing (eash side of the pulse) to consider
         """
         self.omega = omega
         self.fs = fs
         self.times = []
-        self.impulse = windowed_bl_impulse(fs, omega, 16)
+        self.impulse = windowed_bl_impulse(fs, omega, crossings)
         self.len = len(self.impulse)
 
     def add_time(self, t, value=1):

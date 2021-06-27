@@ -8,12 +8,14 @@ import numpy as np
 import wavio
 
 
-def sythesize(rate, f, pw):
+def sythesize(rate, omega, crossings, f, pw):
     """
     Sytheszie a square/pulse wave a a trianlgle/saw
 
     args:
         rate - audio sample rate
+        omega - oversampling multiplier of the band limited impulse
+        crossings - number of crosssing (eash side of the pulse) to consider
         f - numpy array of frequecne at each step
         pw - numpy array of pulsewidth at each step
 
@@ -23,7 +25,7 @@ def sythesize(rate, f, pw):
     N = len(f)
 
     # Set up band limited impulse train class
-    blit = Blit(rate, 256) # work with interpolation
+    blit = Blit(rate, omega, crossings) # work with interpolation
 
     # Holds the calculated pulse train
     x = np.linspace(0, 0, N)
